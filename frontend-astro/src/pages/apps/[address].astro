@@ -1,0 +1,74 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+
+
+import apps from '../../../../data/pca.json'
+
+const appsByAddress = Object.fromEntries(apps.map(app => [app.address, app]))
+
+export const getStaticPaths = async () => {
+	return apps.map((app) => ({
+		params: { address: `0x${app.address}` },
+		props: app,
+	}))
+
+	// const apps = []
+
+	// for(let i = 0n; i < 0xffffffffffffffffffffffffffffffffffffffffn; i++)
+	// 	apps.map((app) => ({
+	// 		params: { address: `0x${i.toString(16)}` },
+	// 		props: app,
+	// 	}))
+	
+	// return apps
+}
+
+
+import ContractComparison from '../../components/ContractComparison.svelte'
+
+const app = Astro.props
+---
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+
+		<style>
+			a {
+				display: contents;
+			}
+
+			section {
+				display: grid;
+				gap: 0.5rem;
+				padding: 1rem;
+				border-radius: 1rem;
+				background-color: rgba(255, 255, 255, 0.2);
+			}
+		</style>
+	</head>
+
+	<body>
+		<Header />
+
+		<main>
+			<h1>{app.name}</h1>
+
+			<output>0x{app.address}</output>
+
+			<h3>Compare</h3>
+
+			<ContractComparison
+				client:visible
+				address={app.address}
+			/>
+		</main>
+
+		<Footer />
+	</body>
+</html>
